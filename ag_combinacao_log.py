@@ -4,6 +4,7 @@
 #Versão de crossover por combinação dos pais com criação de arquivo de log
 
 from random import randint
+from time import time
 import numpy as np
 import sys
 
@@ -12,7 +13,7 @@ global tam_pop, mutacao, nro_ger
 #Definição dos parâmetros do AG:
 tam_pop = 4 #Tamanho da população
 prob_mutacao = 0.01 #Probabilidade de mutação
-nro_ger = 10 #Número de gerações
+nro_ger = 5 #Número de gerações
 
 #Escrita no arquivo de log
 nome_arq = str(tam_pop)+'_'+str(prob_mutacao*100)+'%_'+str(nro_ger)+'_comb.txt'
@@ -108,6 +109,7 @@ def ordenaPopulacao(populacao): #Ordena populacao[] para valores decrescentes de
 				ordenado = False
 	return populacao
 
+inicio = time()
 ger_atual = 1 #Geração atual
 pop = geraPopulacao() #Gera população inicial
 for i in range(0,nro_ger): #Início da evolução
@@ -130,6 +132,7 @@ for i in range(0,nro_ger): #Início da evolução
 	pop = prox_ger #Atualiza a geração com os novos indivíduos formados
 	ger_atual += 1
 
+fim = time()
 pop = ordenaPopulacao(pop) #Ordena a população com vase em valores decrescentes de f(x)
 print("\nPopulação Final:\n\n{}".format(pop))
 arq.write("\nPopulação Final:\n\n{}".format(pop)+'\n')
@@ -139,5 +142,10 @@ for individuo in pop:
 
 #Mostrando o melhor indivíduo após todas as gerações:
 print("\n\nMelhor indivúduo:\n\nx = {} = {}\nf(x) = {}".format(pop[0],bitsToDec(pop[0]),funcao(bitsToDec(pop[0]))))
-arq.write("\n\n\nMelhor indivúduo:\n\nx = {} = {}\nf(x) = {}".format(pop[0],bitsToDec(pop[0]),funcao(bitsToDec(pop[0]))))
+arq.write("\n\n\nMelhor indivúduo:\n\nx = {} = {}\nf(x) = {}".format(pop[0],bitsToDec(pop[0]),funcao(bitsToDec(pop[0])))+'\n')
+erro = round((abs(bitsToDec(pop[0])-31)/31)*100,2)
+print('Erro = {}'.format(str(erro)+' %'))
+arq.write('Erro = {}'.format(str(erro)+' %\n'))
+print('Tempo de execução: {} s'.format(round(fim-inicio,2)))
+arq.write('Tempo de execução: {} s'.format(round(fim-inicio,2)))
 arq.close()

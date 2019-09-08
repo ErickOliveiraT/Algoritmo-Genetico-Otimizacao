@@ -7,12 +7,12 @@ from random import randint
 import numpy as np
 import sys
 
-global tam_pop, mutacao, nro_ger
+global tam_pop, prob_mutacao, nro_ge
 
-#Definição dos parâmetros do AG:
-tam_pop = 4 #Tamanho da população
-prob_mutacao = 0.01 #Probabilidade de mutação
-nro_ger = 10 #Número de gerações
+#Captura dos parâmetros do AG:
+tam_pop = int(sys.argv[1]) #Tamanho da população
+prob_mutacao = float(sys.argv[2]) #Probabilidade de mutação
+nro_ger = int(sys.argv[3]) #Número de gerações
 
 if tam_pop%2 != 0 or nro_ger == 0:
 	print("Favor inserir nro de gerações maior que 0 e um tamanho da populacao divisível por 2")

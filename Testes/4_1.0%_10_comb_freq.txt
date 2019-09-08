@@ -1,0 +1,16 @@
+Tamanho da população: 4
+Taxa de mutação: 1.0 %
+Número de gerações: 10
+Operador de cruzamento: Combinação
+Quantidade de execuções: 30
+
+x = 19: 2 ocorrencia(s) -- 6.67 %
+x = 23: 2 ocorrencia(s) -- 6.67 %
+x = 24: 2 ocorrencia(s) -- 6.67 %
+x = 25: 4 ocorrencia(s) -- 13.33 %
+x = 26: 1 ocorrencia(s) -- 3.33 %
+x = 27: 3 ocorrencia(s) -- 10.0 %
+x = 28: 3 ocorrencia(s) -- 10.0 %
+x = 29: 3 ocorrencia(s) -- 10.0 %
+x = 30: 4 ocorrencia(s) -- 13.33 %
+x = 31: 6 ocorrencia(s) -- 20.0 %

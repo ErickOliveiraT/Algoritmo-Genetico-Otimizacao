@@ -1,10 +1,9 @@
 #Trabalho 1 - Inteligência Artificial
 #Érick de Oliveira Teixeira - 2017001437
 #Algoritmo Genético para otimização da função f(x) = x^2 para 0 <= x <= 31
-#Versão de crossover por média dos pais com criação de arquivo de log
+#Versão para testes com crossover por média dos pais
 
 from random import randint
-from time import time
 import numpy as np
 import sys
 
@@ -14,15 +13,17 @@ global tam_pop, prob_mutacao, nro_ger
 tam_pop = int(sys.argv[1]) #Tamanho da população
 prob_mutacao = float(sys.argv[2]) #Probabilidade de mutação
 nro_ger = int(sys.argv[3]) #Número de gerações
+qnt_exec = int(sys.argv[4]) #Quantidade de execuções
 
 #Escrita no arquivo de log
-nome_arq = str(tam_pop)+'_'+str(prob_mutacao*100)+'%_'+str(nro_ger)+'_média.txt'
+nome_arq = str(tam_pop)+'_'+str(prob_mutacao*100)+'%_'+str(nro_ger)+'_media_freq.txt'
 path_arq = 'Testes/'+nome_arq
 arq = open(path_arq,'w')
 arq.write('Tamanho da população: ' + str(tam_pop) + '\n')
 arq.write('Taxa de mutação: ' + str(prob_mutacao*100) + ' %\n')
 arq.write('Número de gerações: ' + str(nro_ger) + '\n')
 arq.write('Operador de cruzamento: Média\n')
+arq.write('Quantidade de execuções: {}\n\n'.format(str(qnt_exec)))
 
 if nro_ger == 0:
 	print("Favor inserir nro de gerações maior que 0")
@@ -107,42 +108,31 @@ def ordenaPopulacao(populacao): #Ordena populacao[] para valores decrescentes de
 				ordenado = False
 	return populacao
 
-inicio = time()
-ger_atual = 1 #Geração atual
-pop = geraPopulacao() #Gera população inicial
-for i in range(0,nro_ger): #Início da evolução
-	print("\nGeração {}:\n\nPopulação = {}".format(ger_atual,pop))
-	arq.write("\nGeração {}:\n\nPopulação = {}".format(ger_atual,pop)+'\n')
-	apt = calcAptidao(pop) #Calcula aptidão
-	print("Aptidão = {}".format(apt))
-	arq.write("Aptidão = {}".format(apt)+'\n')
-	sel = selecionar(pop,apt) #Seleciona 2 indivíduos
-	prox_ger = [] #Variável que guarda os integrantes da proxima geração
-	for j in range(0,int(tam_pop)): #Gera a quantidade de filhos suficiente para formar a próxima geração
-		sel = selecionar(pop,apt)
-		print("Selecionados = {}".format(sel))
-		arq.write("Selecionados = {}".format(sel)+'\n')
-		filho = crossover(sel)
-		print("Filho = {}".format(filho))
-		arq.write("Filho = {}".format(filho)+'\n')
-		prox_ger.append(filho)
-	pop = prox_ger #Atualiza a geração com os novos indivíduos formados
-	ger_atual += 1
+cont = 0
+melhores = []
+while cont < qnt_exec:
+	ger_atual = 1 #Geração atual
+	pop = geraPopulacao() #Gera população inicial
+	for i in range(0,nro_ger): #Início da evolução
+		apt = calcAptidao(pop) #Calcula aptidão
+		sel = selecionar(pop,apt) #Seleciona 2 indivíduos
+		prox_ger = [] #Variável que guarda os integrantes da proxima geração
+		for j in range(0,int(tam_pop)): #Gera a quantidade de filhos suficiente para formar a próxima geração
+			sel = selecionar(pop,apt)
+			filho = crossover(sel)
+			prox_ger.append(filho)
+		pop = prox_ger #Atualiza a geração com os novos indivíduos formados
+		ger_atual += 1
 
-fim = time()
-pop = ordenaPopulacao(pop) #Ordena a população com vase em valores decrescentes de f(x)
-print("\nPopulação Final:\n\n{}".format(pop))
-arq.write("\nPopulação Final:\n\n{}".format(pop)+'\n')
-for individuo in pop:
-	print(bitsToDec(individuo), end=' ')
-	arq.write(str(bitsToDec(individuo))+' ')
+	pop = ordenaPopulacao(pop) #Ordena a população com vase em valores decrescentes de f(x)
+	melhores.append(bitsToDec(pop[0]))
+	cont += 1
 
-#Mostrando o melhor indivíduo após todas as gerações:
-print("\n\nMelhor indivúduo:\n\nx = {} = {}\nf(x) = {}".format(pop[0],bitsToDec(pop[0]),funcao(bitsToDec(pop[0]))))
-arq.write("\n\nMelhor indivúduo:\n\nx = {} = {}\nf(x) = {}".format(pop[0],bitsToDec(pop[0]),funcao(bitsToDec(pop[0])))+'\n')
-erro = round((abs(bitsToDec(pop[0])-31)/31)*100,2)
-print('Erro = {}'.format(str(erro)+' %'))
-arq.write('Erro = {}'.format(str(erro)+' %\n'))
-print('Tempo de execução: {} s'.format(round(fim-inicio,2)))
-arq.write('Tempo de execução: {} s'.format(round(fim-inicio,2)))
+m = np.array(melhores)
+uniqueValues, occurCount = np.unique(m, return_counts=True)
+
+for i in range(0,len(occurCount)):
+	freq = round((occurCount[i]*100)/qnt_exec,2)
+	print('x = {}: {} ocorrencia(s) -- {} %'.format(uniqueValues[i],occurCount[i],freq))
+	arq.write('x = {}: {} ocorrencia(s) -- {} %'.format(uniqueValues[i],occurCount[i],freq)+'\n')
 arq.close()
